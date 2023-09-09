@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Demo</title>
+	<script src="js/BarcodeParser.js"></script>
+	<style>
+		#scan,
+		#onscan {
+			width: 90%;
+			height: 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Demo Website</h1>
+
+	<input type="text" id="scan" value="" />
+	<pre id="scantext"></pre>
+
+	<button id="simulate">Simulate</button>
+	<button id="debug">Debug</button>
+	<script>
+		let element = document.getElementById('scan');
+		let scanText = document.getElementById('scantext');
+		let scanLog = '';
+
+		let elem = document.getElementById('onscan');
+
+		let ignoreKeys = ['Shift', 'Enter'];
+		element.addEventListener('keyup', function (e) {
+			if (!ignoreKeys.includes(e.key)) {
+				scanLog += String.fromCharCode(e.which);
+			} else if (e.key == 'Enter') {
+				scanText.innerHTML = scanLog;
+				console.log('code', scanLog);
+				console.log(parseBarcode(scanLog));
+				scanLog = '';
+				element.value = '';
+			}
+		});
+
+		let codes = [
+			'01050555657386031725093010M2214125\u001d2179FN1YA61VMH',
+			'\u001d01050555657386031725093010M2214125\u001d2179FN1YA61VMH',
+
+			'01050170070140892110023929132371\u001d172502281010223',
+			//'\u001d01050170070140892110023929132371\u001d172502281010223',
+
+			'01050126170092581724093010TA2014\u001d21547946645476',
+			//'\u001d01050126170092581724093010TA2014\u001d21547946645476',
+
+			'01050126170092581724093010TA2014\u001d21498132820786',
+			//'\u001d01050126170092581724093010TA2014\u001d21498132820786',
+
+			'010506009873004817230531103U227C\u001d21203375254356',
+			'\u001d010506009873004817230531103U227C\u001d21203375254356',
+
+			'010503607200541921HTG6GK8XWNBN\u001d100305714\u001d17230531',
+			'\u001d010503607200541921HTG6GK8XWNBN\u001d100305714\u001d17230531',
+
+			'01050001231098451724063010DK6G\u001d2110181778663795',
+			'\u001d01050001231098451724063010DK6G\u001d2110181778663795',
+
+			'01050555657064351724063010M2202126\u001d21XYX2W8DZZ1R9',
+			'\u001d01050555657064351724063010M2202126\u001d21XYX2W8DZZ1R9',
+
+			'01050555657064591725073110M2211352\u001d21961717087391',
+			'\u001d01050555657064591725073110M2211352\u001d21961717087391',
+		];
+
+		let simulateBtn = document.getElementById('simulate');
+		simulateBtn.addEventListener('click', function () {
+			codes.forEach(function (item, index) {
+				console.log(parseBarcode(item));
+			})
+			//
+		});
+
+		String.prototype.replaceArray = function (find, replace) {
+			var replaceString = this;
+			var regex;
+			for (var i = 0; i < find.length; i++) {
+				regex = new RegExp(find[i], "g");
+				replaceString = replaceString.replace(regex, replace);
+			}
+			return replaceString;
+		};
+
+		let debugBtn = document.getElementById('debug');
+		debugBtn.addEventListener('click', function () {
+			let str = '\u001d01050555657386031725093010M2214125\u001d2179FN1YA61VMH';
+			let fncCharArr = ["\u0000", "\u001d", "\x00"];
+			let code = str.replaceArray(fncCharArr, String.fromCharCode(29));
+			console.log(parseBarcode(code));
+		});
+
+	</script>
+</body>
+
+</html>
